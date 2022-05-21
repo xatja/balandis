@@ -21,3 +21,7 @@ in the horizontal direction. The width of the window divided by the height.
 An aspect ratio of $1.0$ defines a square ratio. An aspect ratio of $0.5$ means 
 that for every two pixels in the horizontal direction there is one pixel in the
 vertical direction.
+
+## TODO 
+
+- [ ] Set up GLFW debug callback.
