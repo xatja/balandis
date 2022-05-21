@@ -7,7 +7,8 @@ Window::Window(const char *title, int width, int height, bool fullscreen)
         Error("Couldn't initialize GLFW");
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
     window = glfwCreateWindow(
         width,
