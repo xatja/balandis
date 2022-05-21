@@ -25,3 +25,4 @@ vertical direction.
 ## TODO 
 
 - [ ] Set up GLFW debug callback.
+- [ ] Add test suite.
