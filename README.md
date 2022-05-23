@@ -24,5 +24,7 @@ vertical direction.
 
 ## TODO 
 
-- [ ] Set up GL debug callback.
 - [ ] Add test suite.
+- [x] Toggle fullscreen with F.
+- [ ] Refactor out input callbacks to its own class.
+- [ ] Add scenes.

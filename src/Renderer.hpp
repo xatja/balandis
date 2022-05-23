@@ -6,6 +6,7 @@
 class Renderer
 {
 public:
+    void Setup();
     void Render(double time);
 };
 

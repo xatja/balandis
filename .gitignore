@@ -1,5 +1,5 @@
-# build folder
 build
+.vscode
 
 CMakeLists.txt.user
 CMakeCache.txt

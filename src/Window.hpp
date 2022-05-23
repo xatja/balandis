@@ -21,7 +21,9 @@ public:
 
 private:
     GLFWwindow *window;
-    bool fullscreen;
+    int width, height, refresh_rate;
+    static Window *gh_window;
+    static bool fullscreen;
     static void OnResize(GLFWwindow *window, int width, int height);
     static void OnKey(
         GLFWwindow *window,
@@ -29,6 +31,7 @@ private:
         int scancode,
         int action,
         int mods);
+    static void ToggleFullscreen(GLFWwindow *window);
 };
 
 #endif

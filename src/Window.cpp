@@ -1,8 +1,13 @@
 #include "Window.hpp"
 
+Window *Window::gh_window = nullptr;
+
 Window::Window(const char *title, int width, int height, bool fullscreen)
-    : fullscreen(fullscreen)
+    : width(width), height(height)
 {
+    gh_window = this;
+    Window::fullscreen = fullscreen;
+
     if (!glfwInit())
         Error("Couldn't initialize GLFW");
 
@@ -20,6 +25,9 @@ Window::Window(const char *title, int width, int height, bool fullscreen)
     if (!window)
         Error("Couldn't create window");
 
+    const GLFWvidmode *video_mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    refresh_rate = video_mode->refreshRate;
+
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, Window::OnKey);
     glfwSetWindowSizeCallback(window, Window::OnResize);
@@ -36,7 +44,13 @@ Window::~Window()
 
 void Window::OnResize(GLFWwindow *window, int width, int height)
 {
-    GLfloat aspectRatio;
+    if (!fullscreen) 
+    {
+        gh_window->width = width;
+        gh_window->height = height;
+    }
+
+    GLdouble range = 100.0;
 
     if (height == 0)
         height = 1;
@@ -46,21 +60,19 @@ void Window::OnResize(GLFWwindow *window, int width, int height)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    aspectRatio = (GLfloat)width / (GLfloat)height;
-
     if (width <= height)
     {
         glOrtho(
-            -100.0, 100.0,
-            -100.0 / aspectRatio, 100.0 / aspectRatio,
-            1.0, -1.0);
+            -range, range,
+            -range * height / width, range * height / width,
+            -range, range);
     }
     else
     {
         glOrtho(
-            -100.0 * aspectRatio, 100.0 * aspectRatio,
-            -100.0, 100.0,
-            1.0, -1.0);
+            -range * width / height, range * width / height,
+            -range, range,
+            -range, range);
     }
 
     glMatrixMode(GL_MODELVIEW);
@@ -76,14 +88,48 @@ void Window::OnKey(
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+
+    if (key == GLFW_KEY_F && action == GLFW_PRESS)
+        ToggleFullscreen(window);
 }
 
 void Window::Loop(Renderer *renderer)
 {
+    renderer->Setup();
+
     while (!glfwWindowShouldClose(window))
     {
         renderer->Render(glfwGetTime());
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+}
+
+bool Window::fullscreen = false;
+
+void Window::ToggleFullscreen(GLFWwindow *window)
+{
+    if (fullscreen)
+    {
+        glfwSetWindowMonitor(
+            window, 
+            NULL, 
+            0, 0,
+            gh_window->width, gh_window->height, 
+            gh_window->refresh_rate);
+    }
+    else
+    {
+        GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode *video_mode = glfwGetVideoMode(monitor);
+
+        glfwSetWindowMonitor(
+            window,
+            monitor,
+            0, 0,
+            video_mode->width, video_mode->height,
+            video_mode->refreshRate);
+    }
+
+    fullscreen = !fullscreen;
 }
